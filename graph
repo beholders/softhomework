@@ -1,0 +1,125 @@
+
+#include<bits/stdc++.h>
+#define maxnum 99999
+using namespace std;
+struct EdgeNode
+{
+    int a;
+    EdgeNode *next;
+};
+typedef struct AdjList
+{
+    char date;
+    EdgeNode *first;
+}adjList[100];
+struct Graph
+{
+    adjList adj;
+    int listnum,edge;
+};
+void CreatG(Graph *G,int n)
+{
+    EdgeNode *p;
+    G->listnum=n;
+    for(int i=0;i<n;i++)
+    {
+        cin>>G->adj[i].date;
+        G->adj[i].first=NULL;
+    }
+    int m;
+    cin>>m;
+    G->edge=m;
+    char a,c;
+    for(int i=0;i<m;i++)
+    {
+        cin>>a>>c;
+        p=new EdgeNode;
+        for(int j=0;j<n;j++)
+        {
+            if(c==G->adj[j].date)
+            {
+                p->a=j;
+            }
+            if(a==G->adj[j].date)
+            {
+                p->next=G->adj[j].first;
+                G->adj[j].first=p;
+            }
+        }
+    }
+}
+int flag[100]={0};
+void DFS(Graph G,int v)
+{
+    cout<<G.adj[v].date<<' ';
+    flag[v]=1;
+    EdgeNode *p;
+    p=G.adj[v].first;
+    while(p!=NULL)
+    {
+        int x;
+        x=p->a;
+        if(flag[x]==0)
+        {
+            DFS(G,x);
+        }
+        p=p->next;
+    }
+
+}
+void BFS(Graph G,int v)
+{
+    cout<<G.adj[v].date<<' ';
+    flag[v]=1;
+    EdgeNode *p;
+    queue<int> q;
+    q.push(v);
+    int w;
+    while(!q.empty())
+    {
+        w=q.front();
+        p=G.adj[w].first;
+        q.pop();
+        if(p!=NULL)
+        {
+            w=p->a;
+            for(;;p=p->next,w=p->a)
+            {
+                if(flag[w]==0)
+                {
+                    cout<<G.adj[w].date<<' ';
+                    q.push(w);
+                    flag[w]=1;
+                }
+                if(p->next==NULL)
+                   {break;}
+            }
+        }
+    }
+}
+int main()
+{
+    int n;
+    cin>>n;
+    Graph G;
+    CreatG(&G,n);
+    for(int i=0;i<n;i++)
+    {
+        if(flag[i]==0)
+        {
+            DFS(G,i);
+        }
+    }
+    cout<<endl;
+    memset(flag,0,100);
+    for(int i=0;i<n;i++)
+    {
+        if(flag[i]==0)
+        {
+            BFS(G,i);
+        }
+    }
+    return 0;
+}
+
+
